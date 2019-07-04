@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<div id="app">
+    <div class="panel panel-primary">
+          <div class="panel-heading">
+                <h3 class="panel-title">添加品牌</h3>
+          </div>
+          <div class="panel-body form-inline">
+                   <label>
+                        Name:
+                        <input type="text" v-model='name' class="form-control">
+                    </label>
+                    <input type="button" value="添加" @click="add" class="btn btn-primary">
+          </div>
+    </div>
+    
+
+    <table class="table table-bordered  table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Ctime</th>
+                <th>Operation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="item in list" :key="item.id">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.ctime}}</td>
+                <td>
+                    <a href="">删除</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+</div>
+
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script src="../node_modules/vue-resource/dist/vue-resource.js"></script>
+<script src="../node_modules/axios/dist/axios.js"></script>
+<script src="../node_modules/qs/dist/qs.js"></script>
+<script>
+    axios.defaults.baseURI = 'http://localhost:9090'; //设置域名
+    axios.defaults.withCredentials = true; //跨域请求
+    axios.defaults.headers['Content-Type'] = 'application/json;charset=UTF-8'; // 设置数据传输类型
+
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            name:'',
+            list: [
+                {id: 1, name:'五菱宏光', ctime: new Date()},
+                {id: 2, name:'法拉利', ctime: new Date()}
+            ]
+        },
+        created(){ //当 vm实例 的data 和method 初始化完毕后， vm实例会自动执行created 这个生命周期函数
+            this.getAllList();
+        },
+        methods: {
+            add(){},
+            getAllList(){ // 获取所有车的品牌列表
+                var _this = this;
+               axios({
+                   method: 'get',
+                   url: '/mysql/carList',
+                   data: ''
+               }).then(result=>{
+                   if(result!=null){
+                      _this.list= result;
+                   }else {
+                       alert("无数据！")
+                   }
+               }, error=>{
+                  alert("请求失败！")
+               });
+               this.list =_this.list;
+            }
+        }
+    })
+
+</script>
+</body>
+</html>
