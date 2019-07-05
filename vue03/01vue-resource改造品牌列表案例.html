@@ -36,7 +36,7 @@
                 <td>{{item.name}}</td>
                 <td>{{item.ctime}}</td>
                 <td>
-                    <a href="">删除</a>
+                    <a href="" @click.prevent="del(item.id)">删除</a>
                 </td>
             </tr>
         </tbody>
@@ -46,44 +46,56 @@
 
 <script src="../node_modules/vue/dist/vue.js"></script>
 <script src="../node_modules/vue-resource/dist/vue-resource.js"></script>
-<script src="../node_modules/axios/dist/axios.js"></script>
-<script src="../node_modules/qs/dist/qs.js"></script>
 <script>
-    axios.defaults.baseURI = 'http://localhost:9090'; //设置域名
-    axios.defaults.withCredentials = true; //跨域请求
-    axios.defaults.headers['Content-Type'] = 'application/json;charset=UTF-8'; // 设置数据传输类型
-
-
+    Vue.http.options.root = 'http://localhost:9090/';
     var vm = new Vue({
-        el: "#app",
+        el: '#app',
         data: {
             name:'',
             list: [
-                {id: 1, name:'五菱宏光', ctime: new Date()},
-                {id: 2, name:'法拉利', ctime: new Date()}
             ]
         },
         created(){ //当 vm实例 的data 和method 初始化完毕后， vm实例会自动执行created 这个生命周期函数
             this.getAllList();
         },
         methods: {
-            add(){},
+            del(id){
+                this.$http.post('mysql/delCar',{ "id": id }).then(
+                    result=>{
+                        if(result.body === 1){
+                            //成功了！
+                            this.getAllList();
+                        }  else {
+                            alert('删除失败！！！')
+                        }
+                    }
+                )
+            },
+            add(){
+                this.$http.post('mysql/addCar',{ "name": this.name }).then(
+                    result=>{
+                      if(result.body === 1){
+                          //成功了！
+                          this.getAllList();
+                          //清空 name
+                          this.name ="";
+                      }  else {
+                          alert('添加失败！！！')
+                      }
+                    }
+                )
+            },
             getAllList(){ // 获取所有车的品牌列表
-                var _this = this;
-               axios({
-                   method: 'get',
-                   url: '/mysql/carList',
-                   data: ''
-               }).then(result=>{
-                   if(result!=null){
-                      _this.list= result;
-                   }else {
-                       alert("无数据！")
-                   }
-               }, error=>{
-                  alert("请求失败！")
-               });
-               this.list =_this.list;
+                this.$http.get('mysql/carList').then(result =>{
+                    result = result.body;
+                    if(result!=null){
+                        this.list = result;
+                    }else{
+                       alert('无数据！！！')
+                    }
+                },error =>{
+                    alert('请求错误！！！'+error)
+                })
             }
         }
     })
