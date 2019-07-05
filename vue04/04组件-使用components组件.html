@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <login></login>
+</div>
+
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {},
+        methods: {},
+        components: {
+           login: {
+               template: '<h1> 这是私有的login组件</h1>'
+           }
+        }
+    })
+
+</script>
+</body>
+</html>

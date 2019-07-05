@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <template id="tmp1">
+        <div>
+            <h1>
+                这是通过template元素，在外部定义的组件结构
+            </h1>
+        </div>
+    </template>
+</div>
+
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script>
+    Vue.component('mycom3',{
+        template: '#tmp1'
+    })
+    var vm = new Vue({
+        el: "#app",
+        data: {},
+        methods: {}
+    })
+
+</script>
+</body>
+</html>
